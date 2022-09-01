@@ -8,7 +8,8 @@
     "setupFiles": [
       "./setup-jest.js",
       "jest-localstorage-mock",
-      "./__setups__/localstorage.js"
+      "./src/__setups__/localstorage.js",
+      "./src/__mocks__/client.js"
     ],
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
