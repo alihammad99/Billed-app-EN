@@ -1,6 +1,6 @@
 import LoginUI from "../views/LoginUI";
+import DashboardUI from "../views/DashboardUI";
 import Login from "../containers/Login.js";
-import DashboardUI from "../views/DashboardUI.js";
 import { ROUTES } from "../constants/routes";
 import { fireEvent, screen } from "@testing-library/dom";
 
@@ -220,7 +220,7 @@ describe("Given that I am a user on login page", () => {
     });
 
     test("It should renders HR dashboard page", () => {
-      document.body.innerHTML = DashboardUI({data: {}});
+      document.body.innerHTML = DashboardUI({ data: [] });
       expect(screen.queryByText("Confirmation")).toBeTruthy();
     });
   });
