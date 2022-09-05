@@ -2,7 +2,6 @@ import { screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import Bills from "../containers/Bills.js";
 import { bills } from "../fixtures/bills.js";
-import { localStorageMock } from "../__mocks__/localStorage";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -23,5 +22,8 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono);
       expect(dates.sort()).toEqual(datesSorted.sort());
     });
+    test("I can type in the information for a bill and add a receipt as proof",()=>{
+      
+    })
   });
 });

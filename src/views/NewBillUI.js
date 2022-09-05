@@ -17,7 +17,7 @@ export default () => {
                     <label for="expense-type" class="bold-label">Category of expense</label>
                       <select required class="form-control blue-border" data-testid="expense-type">
                         <option>Travels</option>
-                        <option>Food</option>
+                        <option data-testid="select-option">Food</option>
                         <option>Hostel</option>
                         <option>Online services</option>
                         <option>IT products and electronics</option>
