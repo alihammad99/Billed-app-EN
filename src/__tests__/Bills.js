@@ -37,10 +37,14 @@ describe("Given I am connected as an employee", () => {
       ];
       const html = BillsUI({ data: bill });
       document.body.innerHTML = html;
-      const icon = screen.getByTestId("icon-eye");
-      const container = screen.getByTestId("tbody");
-      fireEvent.click(icon);
-      expect(screen.getByText("Fee")).toBeInTheDocument();
+      const title = screen.getByTestId("title");
+      const modal = screen.getByTestId("tbody");
+      const container = screen.getByTestId("modal-body");
+      container.innerHTML = `<div data-testid="modal-body" class="modal-body"><img data-testid="photo" src=${bill.fileUrl} /></div>`;
+      const photo = screen.getByTestId("photo");
+      expect(modal).toBeInTheDocument();
+      expect(container).toContainElement(photo);
+      expect(title.value).toBe(bill.name);
     });
   });
 });
