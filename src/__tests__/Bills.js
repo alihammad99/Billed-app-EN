@@ -1,7 +1,8 @@
-import { screen } from "@testing-library/dom";
+import { fireEvent, screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import Bills from "../containers/Bills.js";
 import { bills } from "../fixtures/bills.js";
+import "@testing-library/jest-dom";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -22,8 +23,24 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono);
       expect(dates.sort()).toEqual(datesSorted.sort());
     });
-    test("I can type in the information for a bill and add a receipt as proof",()=>{
-      
-    })
+    test("I click on the icon to display the receipt", () => {
+      const bill = [
+        {
+          type: "Food",
+          name: "Lunch",
+          date: "03/07/2022",
+          amount: 100,
+          status: "Cancelled",
+          fileUrl:
+            "https://blog.openclassrooms.com/en/wp-content/uploads/sites/4/2018/11/Blog_logo.jpg",
+        },
+      ];
+      const html = BillsUI({ data: bill });
+      document.body.innerHTML = html;
+      const icon = screen.getByTestId("icon-eye");
+      const container = screen.getByTestId("tbody");
+      fireEvent.click(icon);
+      expect(screen.getByText("Fee")).toBeInTheDocument();
+    });
   });
 });
