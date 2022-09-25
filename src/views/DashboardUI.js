@@ -33,7 +33,7 @@ export default ({ data, loading, error }) => {
             </div>
 
             <div class='status-bills-header' style='margin-top: 20px;'>
-              <h3> Declined (${filteredBills(data && data.bills, "refused").length}) </h3>
+              <h3 data-testid='declined' > Declined (${filteredBills(data && data.bills, "refused").length}) </h3>
               <span class='arrow-icon' id='arrow-icon3' data-testid='arrow-icon3'>${ArrowIcon}</span>
             </div>
             <div class='status-bills-container' id='status-bills-container3'>
