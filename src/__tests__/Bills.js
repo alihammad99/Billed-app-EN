@@ -3,6 +3,7 @@ import BillsUI from "../views/BillsUI.js";
 import Bills from "../containers/Bills.js";
 import { bills } from "../fixtures/bills.js";
 import "@testing-library/jest-dom";
+import LoadingPage from "../views/LoadingPage.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -45,6 +46,25 @@ describe("Given I am connected as an employee", () => {
       expect(modal).toBeInTheDocument();
       expect(container).toContainElement(photo);
       expect(title.value).toBe(bill.name);
+    });
+  });
+  describe("views/Bills component: increase coverage to 100%", () => {
+    test("Check Loading page", () => {
+      const html = BillsUI({ data: bills, loading: true });
+      document.body.innerHTML = html;
+
+      const Loading = screen.getByTestId("loading-page");
+      expect(Loading).toBeInTheDocument();
+    });
+    test("Check Error page", () => {
+      const html = BillsUI({
+        data: bills,
+        loading: false,
+        error: "Error page test",
+      });
+      document.body.innerHTML = html;
+      const Error = screen.getByTestId("error-message");
+      expect(Error).toBeInTheDocument();
     });
   });
 });
