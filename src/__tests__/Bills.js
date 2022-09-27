@@ -1,9 +1,12 @@
-import { fireEvent, screen } from "@testing-library/dom";
+import { screen } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
 import Bills from "../containers/Bills.js";
 import { bills } from "../fixtures/bills.js";
 import "@testing-library/jest-dom";
-import LoadingPage from "../views/LoadingPage.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import userEvent from "@testing-library/user-event";
+import { ROUTES } from "../constants/routes.js";
+import "jquery-modal";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -65,6 +68,59 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = html;
       const Error = screen.getByTestId("error-message");
       expect(Error).toBeInTheDocument();
+    });
+  });
+  describe("container/Bills component", () => {
+    test('cover all the "statements" except the back-end firebase calls', () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Admin",
+        })
+      );
+
+      const bill = new Bills({
+        document,
+        onNavigate,
+        firestore: null,
+        bills,
+        localStorage: window.localStorage,
+      });
+
+      const html = BillsUI({
+        data: bills,
+      });
+      document.body.innerHTML = html;
+
+      const handleClickNewBill = jest.fn((e) => bill.handleClickNewBill(e));
+      const handleClickIconEye = jest.fn((icon) =>
+        bill.handleClickIconEye(icon)
+      );
+
+      const newBillBtn = screen.getByTestId("btn-new-bill");
+      expect(newBillBtn).toBeTruthy();
+      newBillBtn.addEventListener("click", handleClickNewBill);
+
+      userEvent.click(newBillBtn);
+      expect(handleClickNewBill).toHaveBeenCalled();
+
+      document.body.innerHTML = html;
+      const iconEye = screen.getAllByTestId("icon-eye");
+      expect(iconEye).toBeTruthy();
+
+      iconEye.forEach((icon) => {
+        icon.addEventListener("click", handleClickIconEye(icon));
+        userEvent.click(icon);
+        expect(handleClickIconEye).toHaveBeenCalled();
+      });
     });
   });
 });
