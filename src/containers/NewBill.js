@@ -61,7 +61,7 @@ export default class NewBill {
       this.firestore
         .bills()
         .add(bill)
-        .then(() => {
+        .then(() => {f
           this.onNavigate(ROUTES_PATH["Bills"]);
         })
         .catch((error) => error);
