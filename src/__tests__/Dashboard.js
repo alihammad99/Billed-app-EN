@@ -284,61 +284,61 @@ describe("Given I am a user connected as Admin", () => {
       const message = await screen.getByText(/Erreur 500/);
       expect(message).toBeTruthy();
     });
-    describe("When I connect as an HR administrator, I open up a list of tickets.", () => {
-      test('I select a ticket, the I open up a second list (ex. "refused" status), and I can no longer select a ticket from the first list.', () => {
-        const onNavigate = (pathname) => {
-          document.body.innerHTML = ROUTES({ pathname });
-        };
+  });
+});
+describe("When I connect as an HR administrator, I open up a list of tickets.", () => {
+  test('I select a ticket, the I open up a second list (ex. "refused" status), and I can no longer select a ticket from the first list.', () => {
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    };
 
-        Object.defineProperty(window, "localStorage", {
-          value: localStorageMock,
-        });
-        window.localStorage.setItem(
-          "user",
-          JSON.stringify({
-            type: "Admin",
-          })
-        );
-
-        const dashboard = new Dashboard({
-          document,
-          onNavigate,
-          firestore: null,
-          bills,
-          localStorage: window.localStorage,
-        });
-        const html = DashboardUI({ data: bills });
-
-        document.body.innerHTML = html;
-
-        const handleShowTickets1 = jest.fn((e) =>
-          dashboard.handleShowTickets(e, bills, 1)
-        );
-        const handleShowTickets2 = jest.fn((e) =>
-          dashboard.handleShowTickets(e, bills, 2)
-        );
-        const handleShowTickets3 = jest.fn((e) =>
-          dashboard.handleShowTickets(e, bills, 3)
-        );
-
-        const pendingIcon = screen.getByTestId("arrow-icon1");
-        const refusedIcon = screen.getByTestId("arrow-icon3");
-
-        pendingIcon.addEventListener("click", handleShowTickets1);
-        refusedIcon.addEventListener("click", handleShowTickets3);
-
-        userEvent.click(refusedIcon);
-        const refusedCard = screen.getByTestId("open-billBeKy5Mo4jkmdfPGYpTxZ");
-        expect(refusedCard).toBeInTheDocument();
-
-        userEvent.click(pendingIcon);
-        userEvent.click(refusedIcon);
-
-        const pendingCard = screen.getByTestId("open-bill47qAXb6fIm2zOKkLzMro");
-
-        expect(pendingCard).toBeInTheDocument();
-        expect(refusedCard).not.toBeInTheDocument();
-      });
+    Object.defineProperty(window, "localStorage", {
+      value: localStorageMock,
     });
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        type: "Admin",
+      })
+    );
+
+    const dashboard = new Dashboard({
+      document,
+      onNavigate,
+      firestore: null,
+      bills,
+      localStorage: window.localStorage,
+    });
+    const html = DashboardUI({ data: bills });
+
+    document.body.innerHTML = html;
+
+    const handleShowTickets1 = jest.fn((e) =>
+      dashboard.handleShowTickets(e, bills, 1)
+    );
+    const handleShowTickets2 = jest.fn((e) =>
+      dashboard.handleShowTickets(e, bills, 2)
+    );
+    const handleShowTickets3 = jest.fn((e) =>
+      dashboard.handleShowTickets(e, bills, 3)
+    );
+
+    const pendingIcon = screen.getByTestId("arrow-icon1");
+    const refusedIcon = screen.getByTestId("arrow-icon3");
+
+    pendingIcon.addEventListener("click", handleShowTickets1);
+    refusedIcon.addEventListener("click", handleShowTickets3);
+
+    userEvent.click(refusedIcon);
+    const refusedCard = screen.getByTestId("open-billBeKy5Mo4jkmdfPGYpTxZ");
+    expect(refusedCard).toBeInTheDocument();
+
+    userEvent.click(pendingIcon);
+    userEvent.click(refusedIcon);
+
+    const pendingCard = screen.getByTestId("open-bill47qAXb6fIm2zOKkLzMro");
+
+    expect(pendingCard).toBeInTheDocument();
+    expect(refusedCard).not.toBeInTheDocument();
   });
 });
