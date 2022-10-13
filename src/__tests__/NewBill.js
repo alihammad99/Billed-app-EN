@@ -3,6 +3,10 @@ import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
+import firebase from "../__mocks__/firebase.js";
+import { bills } from "../fixtures/bills.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import Firestore from "../app/Firestore";
 
 describe("Given I am connected as an employee", () => {
   describe("I can type in the information for a bill and add a receipt as proof.", () => {
@@ -69,5 +73,57 @@ describe("Given I am connected as an employee", () => {
       fireEvent.submit(form);
       expect(form).toBeTruthy();
     });
+  });
+});
+
+describe("container/NewBill component", () => {
+  test('cover all the "statements" except the back-end firebase calls', () => {
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    };
+
+    Object.defineProperty(window, "localStorage", {
+      value: localStorageMock,
+    });
+
+    const inputData = {
+      email: "johndoe@email.com",
+      password: "azerty",
+    };
+
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        type: "Employee",
+        email: inputData.email,
+        password: inputData.password,
+        status: "connected",
+      })
+    );
+
+    const html = NewBillUI();
+    document.body.innerHTML = html;
+
+    const bill = new NewBill({
+      document,
+      onNavigate,
+      firestore: Firestore,
+      bills,
+      localStorage: window.localStorage,
+    });
+
+    const fileUrl = `https://blog.openclassrooms.com/en/wp-content/uploads/sites/4/2018/11/Blog_logo.jpg`;
+    const file = screen.getByTestId("file");
+    const handleChangeFile = jest.fn((e) => bill.handleChangeFile(e));
+    file.addEventListener("change", handleChangeFile);
+    fireEvent.change(file, {
+      target: { filename: fileUrl },
+    });
+    expect(handleChangeFile).toHaveBeenCalled();
+
+    const handleSubmit = jest.fn((e) => bill.handleSubmit(e));
+    const form = screen.getByTestId("form-new-bill");
+    fireEvent.submit(form);
+    expect(handleSubmit).toHaveBeenCalled();
   });
 });

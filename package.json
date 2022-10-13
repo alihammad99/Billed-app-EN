@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "jest --env=jsdom --coverage --noStackTrace --silent"
+    "test": "jest --env=jsdom --coverage"
   },
   "jest": {
     "verbose": false,
