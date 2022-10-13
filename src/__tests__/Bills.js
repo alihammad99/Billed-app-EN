@@ -12,9 +12,44 @@ import firebase from "../__mocks__/firebase.js";
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", () => {
-      const html = BillsUI({ data: [] });
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+
+      const inputData = {
+        email: "johndoe@email.com",
+        password: "azerty",
+      };
+
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+          email: inputData.email,
+          password: inputData.password,
+          status: "connected",
+        })
+      );
+
+      const html = BillsUI({
+        data: [],
+      });
       document.body.innerHTML = html;
+
+      new Bills({
+        document,
+        onNavigate,
+        firestore: null,
+        bills,
+        localStorage: window.localStorage,
+      });
+
       //to-do write expect expression
+      expect(screen.getByTestId("icon-window").classList).not.toBe(null);
     });
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills });
@@ -71,57 +106,55 @@ describe("Given I am connected as an employee", () => {
       expect(Error).toBeInTheDocument();
     });
   });
-  describe("container/Bills component", () => {
-    test('cover all the "statements" except the back-end firebase calls', () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      };
+});
+describe("container/Bills component", () => {
+  test('cover all the "statements" except the back-end firebase calls', () => {
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname });
+    };
 
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
+    Object.defineProperty(window, "localStorage", {
+      value: localStorageMock,
+    });
 
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Admin",
-        })
-      );
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        type: "Admin",
+      })
+    );
 
-      const bill = new Bills({
-        document,
-        onNavigate,
-        firestore: null,
-        bills,
-        localStorage: window.localStorage,
-      });
+    const html = BillsUI({
+      data: bills,
+    });
+    document.body.innerHTML = html;
 
-      const html = BillsUI({
-        data: bills,
-      });
-      document.body.innerHTML = html;
+    const bill = new Bills({
+      document,
+      onNavigate,
+      firestore: null,
+      bills,
+      localStorage: window.localStorage,
+    });
 
-      const handleClickNewBill = jest.fn((e) => bill.handleClickNewBill(e));
-      const handleClickIconEye = jest.fn((icon) =>
-        bill.handleClickIconEye(icon)
-      );
+    const handleClickNewBill = jest.fn((e) => bill.handleClickNewBill(e));
+    const handleClickIconEye = jest.fn((icon) => bill.handleClickIconEye(icon));
 
-      const newBillBtn = screen.getByTestId("btn-new-bill");
-      expect(newBillBtn).toBeTruthy();
-      newBillBtn.addEventListener("click", handleClickNewBill);
+    const newBillBtn = screen.getByTestId("btn-new-bill");
+    expect(newBillBtn).toBeTruthy();
+    newBillBtn.addEventListener("click", handleClickNewBill);
 
-      userEvent.click(newBillBtn);
-      expect(handleClickNewBill).toHaveBeenCalled();
+    userEvent.click(newBillBtn);
+    expect(handleClickNewBill).toHaveBeenCalled();
 
-      document.body.innerHTML = html;
-      const iconEye = screen.getAllByTestId("icon-eye");
-      expect(iconEye).toBeTruthy();
+    document.body.innerHTML = html;
+    const iconEye = screen.getAllByTestId("icon-eye");
+    expect(iconEye).toBeTruthy();
 
-      iconEye.forEach((icon) => {
-        icon.addEventListener("click", handleClickIconEye(icon));
-        userEvent.click(icon);
-        expect(handleClickIconEye).toHaveBeenCalled();
-      });
+    iconEye.forEach((icon) => {
+      icon.addEventListener("click", handleClickIconEye(icon));
+      userEvent.click(icon);
+      expect(handleClickIconEye).toHaveBeenCalled();
     });
   });
 });
