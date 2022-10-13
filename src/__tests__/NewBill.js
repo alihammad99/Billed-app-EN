@@ -123,6 +123,7 @@ describe("container/NewBill component", () => {
 
     const handleSubmit = jest.fn((e) => bill.handleSubmit(e));
     const form = screen.getByTestId("form-new-bill");
+    form.addEventListener("submit", handleSubmit);
     fireEvent.submit(form);
     expect(handleSubmit).toHaveBeenCalled();
   });
