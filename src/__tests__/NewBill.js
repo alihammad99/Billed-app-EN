@@ -2,8 +2,6 @@ import { fireEvent, screen } from "@testing-library/dom";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import "@testing-library/jest-dom";
-import userEvent from "@testing-library/user-event";
-import firebase from "../__mocks__/firebase.js";
 import { bills } from "../fixtures/bills.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import Firestore from "../app/Firestore";
@@ -123,6 +121,7 @@ describe("container/NewBill component", () => {
 
     const handleSubmit = jest.fn((e) => bill.handleSubmit(e));
     const form = screen.getByTestId("form-new-bill");
+    form.addEventListener("submit", handleSubmit);
     fireEvent.submit(form);
     expect(handleSubmit).toHaveBeenCalled();
   });
